@@ -21,6 +21,14 @@ const MultiplicationGame = () => {
     setTotalQuestions(prev => prev + 1);
   };
 
+  const resetGame = () => {
+    setScore(0);
+    setTotalQuestions(0);
+    setStreak(0);
+    setAnswer("");
+    generateQuestion();
+  };
+
   useEffect(() => {
     if (playerName) {
       generateQuestion();
@@ -68,6 +76,15 @@ const MultiplicationGame = () => {
 
   return (
     <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-[#1A1F2C]">
+      <Button
+        onClick={resetGame}
+        variant="outline"
+        size="sm"
+        className="absolute top-4 left-4 text-white border-white hover:text-white hover:bg-[#2A2F3C]"
+      >
+        משחק חדש
+      </Button>
+      
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
