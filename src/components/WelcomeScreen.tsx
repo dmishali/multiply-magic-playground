@@ -26,18 +26,23 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
         className="w-full max-w-md"
       >
         <Card className="p-6 bg-card shadow-lg">
-          <h1 className="text-3xl font-bold mb-6 text-center" style={{ direction: "rtl" }}>
+          <h1 
+            className="text-3xl font-bold mb-6 text-center text-gray-800" 
+            style={{ direction: "rtl" }}
+          >
             ברוכים הבאים למשחק הכפל
           </h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div style={{ direction: "rtl" }}>
-              <label className="block text-lg mb-2">איך קוראים לך?</label>
+              <label className="block text-lg mb-2 text-gray-800 font-semibold">
+                איך קוראים לך?
+              </label>
               <Input
                 type="text"
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
-                className="w-full p-4 text-xl text-right"
+                className="w-full p-4 text-xl text-right bg-white border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50"
                 placeholder="הכנס את שמך"
                 required
               />
@@ -45,7 +50,7 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
             
             <Button 
               type="submit"
-              className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C]"
+              className="w-full text-xl py-6 bg-primary text-white hover:bg-primary/90"
               disabled={!playerName.trim()}
             >
               בוא נתחיל!
