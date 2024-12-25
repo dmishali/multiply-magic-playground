@@ -91,8 +91,8 @@ const MultiplicationGame = () => {
         description: streak >= 2 ? `${streak + 1} ברצף! מדהים!` : "המשך כך!",
         position: "top-center",
         style: {
-          fontSize: "1.5rem",
-          padding: "1rem",
+          fontSize: "1.2rem",
+          padding: "0.75rem",
           backgroundColor: "#4ade80",
           color: "white",
           border: "none",
@@ -104,8 +104,8 @@ const MultiplicationGame = () => {
         description: `התשובה הנכונה היא ${correctAnswer}`,
         position: "top-center",
         style: {
-          fontSize: "1.5rem",
-          padding: "1rem",
+          fontSize: "1.2rem",
+          padding: "0.75rem",
           backgroundColor: "#ef4444",
           color: "white",
           border: "none",
@@ -147,7 +147,7 @@ const MultiplicationGame = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-[#1A1F2C]">
+    <div className="min-h-[90vh] p-4 flex flex-col items-center justify-start pt-16 bg-[#1A1F2C]">
       <Button
         onClick={resetGame}
         variant="outline"
@@ -160,7 +160,7 @@ const MultiplicationGame = () => {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="w-full max-w-md"
+        className="w-full max-w-sm"
       >
         <Card className="p-6 bg-card shadow-lg">
           <div className="text-2xl font-bold mb-2 text-right">
