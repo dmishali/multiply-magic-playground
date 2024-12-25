@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,8 @@ const MultiplicationGame = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
+  
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const generateQuestion = () => {
     if (!tableRange) return;
@@ -48,8 +50,17 @@ const MultiplicationGame = () => {
   useEffect(() => {
     if (playerName && gameMode && tableRange) {
       generateQuestion();
+      // Focus the input when the game starts
+      inputRef.current?.focus();
     }
   }, [playerName, gameMode, tableRange]);
+
+  useEffect(() => {
+    // Re-focus the input after each question
+    if (!gameFinished) {
+      inputRef.current?.focus();
+    }
+  }, [num1, num2]);
 
   useEffect(() => {
     let timer: number;
@@ -179,6 +190,7 @@ const MultiplicationGame = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <input
+                  ref={inputRef}
                   type="number"
                   inputMode="numeric"
                   pattern="[0-9]*"
@@ -186,6 +198,7 @@ const MultiplicationGame = () => {
                   onChange={(e) => setAnswer(e.target.value)}
                   className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
                   placeholder="התשובה שלך"
+                  autoFocus
                 />
                 
                 <Button 
