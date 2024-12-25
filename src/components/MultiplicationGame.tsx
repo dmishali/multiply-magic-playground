@@ -28,8 +28,8 @@ const MultiplicationGame = () => {
     if (parseInt(answer) === correctAnswer) {
       setScore(score + 1);
       setStreak(streak + 1);
-      toast.success("Correct! 🎉", {
-        description: streak >= 2 ? `${streak + 1} in a row! Amazing!` : "Keep going!",
+      toast.success("נכון! 🎉", {
+        description: streak >= 2 ? `${streak + 1} ברצף! מדהים!` : "המשך כך!",
         position: "top-center",
         style: {
           fontSize: "1.5rem",
@@ -42,8 +42,8 @@ const MultiplicationGame = () => {
       generateQuestion();
     } else {
       setStreak(0);
-      toast.error("Try again!", {
-        description: `The correct answer was ${correctAnswer}`,
+      toast.error("נסה שוב!", {
+        description: `התשובה הנכונה היא ${correctAnswer}`,
         position: "top-center",
         style: {
           fontSize: "1.5rem",
@@ -64,11 +64,11 @@ const MultiplicationGame = () => {
         className="w-full max-w-md"
       >
         <Card className="p-6 bg-card shadow-lg">
-          <div className="text-2xl font-bold mb-4">
-            Score: {score} {streak > 1 && `🔥 ${streak}`}
+          <div className="text-2xl font-bold mb-4" style={{ direction: "rtl" }}>
+            ניקוד: {score} {streak > 1 && `🔥 ${streak}`}
           </div>
           
-          <div className="text-4xl font-bold mb-8">
+          <div className="text-4xl font-bold mb-8" style={{ direction: "rtl" }}>
             {num1} × {num2} = ?
           </div>
 
@@ -78,7 +78,7 @@ const MultiplicationGame = () => {
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
-              placeholder="Your answer"
+              placeholder="התשובה שלך"
               autoFocus
             />
             
@@ -87,7 +87,7 @@ const MultiplicationGame = () => {
               className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C]"
               disabled={!answer}
             >
-              Check Answer
+              בדוק תשובה
             </Button>
           </form>
         </Card>
