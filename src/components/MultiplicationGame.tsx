@@ -157,19 +157,18 @@ const MultiplicationGame = () => {
           <div className="text-2xl font-bold mb-2 text-right">
             ניקוד: {score}/{totalQuestions} {streak > 1 && `🔥 ${streak}`}
           </div>
-          {gameMode.timed && gameStarted && !gameFinished && (
+          {gameMode?.timed && gameStarted && !gameFinished && (
             <div className="text-xl font-bold mb-4 text-right">
               זמן: {elapsedTime} שניות
             </div>
           )}
           
           {gameFinished ? (
-            <div className="text-2xl font-bold text-center space-y-4">
-              <div>סיימת את המשחק!</div>
-              <div>ענית נכון על {score} שאלות מתוך {gameMode.questions} שאלות</div>
-              {gameMode.timed && (
-                <div>בזמן של {elapsedTime} שניות</div>
-              )}
+            <div className="text-3xl font-bold text-center space-y-4">
+              <div>
+                ענית נכון על {score} שאלות מתוך {gameMode?.questions} שאלות
+                {gameMode?.timed && ` בזמן של ${elapsedTime} שניות`}
+              </div>
             </div>
           ) : (
             <>
