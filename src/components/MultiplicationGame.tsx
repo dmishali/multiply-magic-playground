@@ -18,7 +18,6 @@ const MultiplicationGame = () => {
     setNum1(Math.floor(Math.random() * 12) + 1);
     setNum2(Math.floor(Math.random() * 12) + 1);
     setAnswer("");
-    setTotalQuestions(prev => prev + 1);
   };
 
   const resetGame = () => {
@@ -38,6 +37,7 @@ const MultiplicationGame = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const correctAnswer = num1 * num2;
+    setTotalQuestions(prev => prev + 1);
     
     if (parseInt(answer) === correctAnswer) {
       setScore(score + 1);
