@@ -68,7 +68,7 @@ const MultiplicationGame = () => {
             
             <Button 
               type="submit"
-              className="w-full text-xl py-6"
+              className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C]"
               disabled={!answer}
             >
               Check Answer
