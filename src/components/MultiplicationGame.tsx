@@ -87,28 +87,9 @@ const MultiplicationGame = () => {
           border: "none",
         },
       });
-
-      if (gameMode && totalQuestions + 1 >= gameMode.questions) {
-        const finalTime = Math.floor((Date.now() - (startTime || 0)) / 1000);
-        setGameFinished(true);
-        toast.success("כל הכבוד! סיימת את המשחק!", {
-          description: `ענית נכון על ${score + 1} שאלות מתוך ${gameMode.questions} שאלות בזמן של ${finalTime} שניות`,
-          position: "top-center",
-          duration: 5000,
-          style: {
-            fontSize: "1.25rem",
-            padding: "1rem",
-            backgroundColor: "#4ade80",
-            color: "white",
-            border: "none",
-          },
-        });
-      } else {
-        generateQuestion();
-      }
     } else {
       setStreak(0);
-      toast.error("נסה שוב!", {
+      toast.error("טעות!", {
         description: `התשובה הנכונה היא ${correctAnswer}`,
         position: "top-center",
         style: {
@@ -120,6 +101,26 @@ const MultiplicationGame = () => {
         },
       });
     }
+
+    if (gameMode && totalQuestions + 1 >= gameMode.questions) {
+      const finalTime = Math.floor((Date.now() - (startTime || 0)) / 1000);
+      setGameFinished(true);
+      toast.success("כל הכבוד! סיימת את המשחק!", {
+        description: `ענית נכון על ${score + (parseInt(answer) === correctAnswer ? 1 : 0)} שאלות מתוך ${gameMode.questions} שאלות בזמן של ${finalTime} שניות`,
+        position: "top-center",
+        duration: 5000,
+        style: {
+          fontSize: "1.25rem",
+          padding: "1rem",
+          backgroundColor: "#4ade80",
+          color: "white",
+          border: "none",
+        },
+      });
+    } else {
+      generateQuestion();
+    }
+    setAnswer("");
   };
 
   if (!playerName) {
