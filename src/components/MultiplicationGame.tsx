@@ -80,7 +80,7 @@ const MultiplicationGame = () => {
         onClick={resetGame}
         variant="outline"
         size="sm"
-        className="absolute top-4 left-4 text-white border-white hover:text-white hover:bg-[#2A2F3C]"
+        className="absolute top-4 left-4 bg-violet-600 text-white border-violet-400 hover:bg-violet-700 hover:text-white hover:border-violet-500"
       >
         משחק חדש
       </Button>
