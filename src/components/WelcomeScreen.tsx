@@ -42,7 +42,7 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
                 type="text"
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
-                className="w-full p-4 text-xl text-right bg-white border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50"
+                className="w-full p-4 text-xl text-right bg-white border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 placeholder:text-gray-600"
                 placeholder="הכנס את שמך"
                 required
               />
