@@ -30,12 +30,28 @@ const MultiplicationGame = () => {
       setStreak(streak + 1);
       toast.success("Correct! 🎉", {
         description: streak >= 2 ? `${streak + 1} in a row! Amazing!` : "Keep going!",
+        position: "top-center",
+        style: {
+          fontSize: "1.5rem",
+          padding: "1rem",
+          backgroundColor: "#4ade80",
+          color: "white",
+          border: "none",
+        },
       });
       generateQuestion();
     } else {
       setStreak(0);
       toast.error("Try again!", {
         description: `The correct answer was ${correctAnswer}`,
+        position: "top-center",
+        style: {
+          fontSize: "1.5rem",
+          padding: "1rem",
+          backgroundColor: "#ef4444",
+          color: "white",
+          border: "none",
+        },
       });
     }
   };
