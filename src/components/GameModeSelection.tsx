@@ -40,7 +40,7 @@ const GameModeSelection = ({ onModeSelect, playerName }: GameModeSelectionProps)
                 className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C] text-right"
               >
                 {mode.timed
-                  ? `${mode.questions} שאלות עם זמן`
+                  ? `${mode.questions === 10 ? 'עשר' : mode.questions === 20 ? 'עשרים' : 'חמישים'} שאלות עם זמן`
                   : "תרגול בלי זמנים"}
               </Button>
             ))}
