@@ -50,7 +50,7 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
             
             <Button 
               type="submit"
-              className="w-full text-xl py-6 bg-primary text-white hover:bg-primary/90"
+              className="w-full text-xl py-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
               disabled={!playerName.trim()}
             >
               בוא נתחיל!
