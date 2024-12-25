@@ -30,7 +30,7 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
             className="text-3xl font-bold mb-6 text-center text-gray-800" 
             style={{ direction: "rtl" }}
           >
-            ברוכים הבאים למשחק הכפל
+            ברוכים הבאים למשחק תרגול לוח הכפל
           </h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -50,7 +50,7 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
             
             <Button 
               type="submit"
-              className="w-full text-xl py-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+              className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C] text-white font-bold"
               disabled={!playerName.trim()}
             >
               בוא נתחיל!
