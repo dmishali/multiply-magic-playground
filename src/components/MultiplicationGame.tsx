@@ -91,7 +91,7 @@ const MultiplicationGame = () => {
             />
             
             <div className="grid grid-cols-3 gap-2">
-              {[...'789456123'].split('').map((num) => (
+              {['7','8','9','4','5','6','1','2','3'].map((num) => (
                 <Button
                   key={num}
                   type="button"
