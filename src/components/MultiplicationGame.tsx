@@ -3,23 +3,29 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import WelcomeScreen from "./WelcomeScreen";
 
 const MultiplicationGame = () => {
   const [num1, setNum1] = useState(0);
   const [num2, setNum2] = useState(0);
   const [score, setScore] = useState(0);
+  const [totalQuestions, setTotalQuestions] = useState(0);
   const [answer, setAnswer] = useState("");
   const [streak, setStreak] = useState(0);
+  const [playerName, setPlayerName] = useState<string | null>(null);
 
   const generateQuestion = () => {
     setNum1(Math.floor(Math.random() * 12) + 1);
     setNum2(Math.floor(Math.random() * 12) + 1);
     setAnswer("");
+    setTotalQuestions(prev => prev + 1);
   };
 
   useEffect(() => {
-    generateQuestion();
-  }, []);
+    if (playerName) {
+      generateQuestion();
+    }
+  }, [playerName]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +62,10 @@ const MultiplicationGame = () => {
     }
   };
 
+  if (!playerName) {
+    return <WelcomeScreen onStart={setPlayerName} />;
+  }
+
   return (
     <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-[#1A1F2C]">
       <motion.div
@@ -64,8 +74,11 @@ const MultiplicationGame = () => {
         className="w-full max-w-md"
       >
         <Card className="p-6 bg-card shadow-lg">
+          <div className="text-2xl font-bold mb-2" style={{ direction: "rtl" }}>
+            שלום {playerName}!
+          </div>
           <div className="text-2xl font-bold mb-4" style={{ direction: "rtl" }}>
-            ניקוד: {score} {streak > 1 && `🔥 ${streak}`}
+            ניקוד: {score}/{totalQuestions} {streak > 1 && `🔥 ${streak}`}
           </div>
           
           <div className="text-4xl font-bold mb-8" style={{ direction: "ltr" }}>
