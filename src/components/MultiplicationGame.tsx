@@ -57,7 +57,7 @@ const MultiplicationGame = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-background">
+    <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-[#1A1F2C]">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
