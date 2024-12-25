@@ -2,22 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
-export type GameMode = {
-  questions: number;
-  timed: boolean;
+export type TableRange = {
+  min: number;
+  max: number;
 };
 
-interface GameModeSelectionProps {
-  onModeSelect: (mode: GameMode) => void;
+interface MultiplicationTableSelectionProps {
+  onTableSelect: (range: TableRange) => void;
   playerName: string;
 }
 
-const GameModeSelection = ({ onModeSelect, playerName }: GameModeSelectionProps) => {
-  const modes: GameMode[] = [
-    { questions: 10, timed: true },
-    { questions: 20, timed: true },
-    { questions: 50, timed: true },
-    { questions: Infinity, timed: false },
+const MultiplicationTableSelection = ({ onTableSelect, playerName }: MultiplicationTableSelectionProps) => {
+  const tables = [
+    { name: "לוח כפל עד 100", range: { min: 1, max: 10 } },
+    { name: "לוח כפל מתקדם", range: { min: 1, max: 20 } },
   ];
 
   return (
@@ -29,19 +27,17 @@ const GameModeSelection = ({ onModeSelect, playerName }: GameModeSelectionProps)
       >
         <Card className="p-6 bg-card shadow-lg">
           <div className="text-2xl font-bold mb-6 text-right">
-            {playerName}, בחר/י מצב משחק:
+            {playerName}, בחר/י את לוח הכפל:
           </div>
           
           <div className="space-y-4">
-            {modes.map((mode, index) => (
+            {tables.map((table, index) => (
               <Button
                 key={index}
-                onClick={() => onModeSelect(mode)}
+                onClick={() => onTableSelect(table.range)}
                 className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C] text-right"
               >
-                {mode.timed
-                  ? `${mode.questions} שאלות עם זמן`
-                  : "תרגול בלי זמנים"}
+                {table.name}
               </Button>
             ))}
           </div>
@@ -51,4 +47,4 @@ const GameModeSelection = ({ onModeSelect, playerName }: GameModeSelectionProps)
   );
 };
 
-export default GameModeSelection;
+export default MultiplicationTableSelection;

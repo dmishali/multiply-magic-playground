@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import WelcomeScreen from "./WelcomeScreen";
 import GameModeSelection from "./GameModeSelection";
+import MultiplicationTableSelection from "./MultiplicationTableSelection";
 import type { GameMode } from "./GameModeSelection";
+import type { TableRange } from "./MultiplicationTableSelection";
 
 const MultiplicationGame = () => {
   const [num1, setNum1] = useState(0);
@@ -16,13 +18,16 @@ const MultiplicationGame = () => {
   const [streak, setStreak] = useState(0);
   const [playerName, setPlayerName] = useState<string | null>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
+  const [tableRange, setTableRange] = useState<TableRange | null>(null);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameFinished, setGameFinished] = useState(false);
 
   const generateQuestion = () => {
-    setNum1(Math.floor(Math.random() * 12) + 1);
-    setNum2(Math.floor(Math.random() * 12) + 1);
+    if (!tableRange) return;
+    setNum1(Math.floor(Math.random() * (tableRange.max - tableRange.min + 1)) + tableRange.min);
+    setNum2(Math.floor(Math.random() * (tableRange.max - tableRange.min + 1)) + tableRange.min);
     setAnswer("");
   };
 
@@ -32,21 +37,23 @@ const MultiplicationGame = () => {
     setStreak(0);
     setAnswer("");
     setGameMode(null);
+    setTableRange(null);
     setStartTime(null);
     setElapsedTime(0);
     setGameStarted(false);
+    setGameFinished(false);
     generateQuestion();
   };
 
   useEffect(() => {
-    if (playerName && gameMode) {
+    if (playerName && gameMode && tableRange) {
       generateQuestion();
     }
-  }, [playerName, gameMode]);
+  }, [playerName, gameMode, tableRange]);
 
   useEffect(() => {
     let timer: number;
-    if (gameStarted && gameMode?.timed && startTime !== null) {
+    if (gameStarted && gameMode?.timed && startTime !== null && !gameFinished) {
       timer = window.setInterval(() => {
         setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
       }, 1000);
@@ -54,7 +61,7 @@ const MultiplicationGame = () => {
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [gameStarted, gameMode, startTime]);
+  }, [gameStarted, gameMode, startTime, gameFinished]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,12 +90,19 @@ const MultiplicationGame = () => {
 
       if (gameMode && totalQuestions + 1 >= gameMode.questions) {
         const finalTime = Math.floor((Date.now() - (startTime || 0)) / 1000);
+        setGameFinished(true);
         toast.success("כל הכבוד! סיימת את המשחק!", {
-          description: `זמן סופי: ${finalTime} שניות`,
+          description: `ענית נכון על ${score + 1} שאלות מתוך ${gameMode.questions} שאלות בזמן של ${finalTime} שניות`,
           position: "top-center",
           duration: 5000,
+          style: {
+            fontSize: "1.25rem",
+            padding: "1rem",
+            backgroundColor: "#4ade80",
+            color: "white",
+            border: "none",
+          },
         });
-        setTimeout(resetGame, 3000);
       } else {
         generateQuestion();
       }
@@ -116,6 +130,10 @@ const MultiplicationGame = () => {
     return <GameModeSelection onModeSelect={setGameMode} playerName={playerName} />;
   }
 
+  if (!tableRange) {
+    return <MultiplicationTableSelection onTableSelect={setTableRange} playerName={playerName} />;
+  }
+
   return (
     <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-[#1A1F2C]">
       <Button
@@ -133,41 +151,53 @@ const MultiplicationGame = () => {
         className="w-full max-w-md"
       >
         <Card className="p-6 bg-card shadow-lg">
-          <div className="text-2xl font-bold mb-2" style={{ direction: "rtl" }}>
+          <div className="text-2xl font-bold mb-2 text-right">
             שלום {playerName}!
           </div>
-          <div className="text-2xl font-bold mb-2" style={{ direction: "rtl" }}>
+          <div className="text-2xl font-bold mb-2 text-right">
             ניקוד: {score}/{totalQuestions} {streak > 1 && `🔥 ${streak}`}
           </div>
-          {gameMode.timed && gameStarted && (
-            <div className="text-xl font-bold mb-4" style={{ direction: "rtl" }}>
+          {gameMode.timed && gameStarted && !gameFinished && (
+            <div className="text-xl font-bold mb-4 text-right">
               זמן: {elapsedTime} שניות
             </div>
           )}
           
-          <div className="text-4xl font-bold mb-8" style={{ direction: "ltr" }}>
-            {num1} × {num2} = ?
-          </div>
+          {gameFinished ? (
+            <div className="text-2xl font-bold text-center space-y-4">
+              <div>סיימת את המשחק!</div>
+              <div>ענית נכון על {score} שאלות מתוך {gameMode.questions} שאלות</div>
+              {gameMode.timed && (
+                <div>בזמן של {elapsedTime} שניות</div>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="text-4xl font-bold mb-8 text-center">
+                {num1} × {num2} = ?
+              </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="number"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
-              placeholder="התשובה שלך"
-            />
-            
-            <Button 
-              type="submit"
-              className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C]"
-              disabled={!answer}
-            >
-              בדוק תשובה
-            </Button>
-          </form>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
+                  placeholder="התשובה שלך"
+                />
+                
+                <Button 
+                  type="submit"
+                  className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C]"
+                  disabled={!answer}
+                >
+                  בדוק תשובה
+                </Button>
+              </form>
+            </>
+          )}
         </Card>
       </motion.div>
     </div>
