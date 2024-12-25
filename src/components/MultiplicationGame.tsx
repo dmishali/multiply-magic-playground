@@ -68,13 +68,15 @@ const MultiplicationGame = () => {
             ניקוד: {score} {streak > 1 && `🔥 ${streak}`}
           </div>
           
-          <div className="text-4xl font-bold mb-8" style={{ direction: "rtl" }}>
+          <div className="text-4xl font-bold mb-8" style={{ direction: "ltr" }}>
             {num1} × {num2} = ?
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="number"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
