@@ -56,6 +56,14 @@ const MultiplicationGame = () => {
     }
   };
 
+  const handleNumberClick = (num: string) => {
+    if (num === "⌫") {
+      setAnswer(prev => prev.slice(0, -1));
+    } else {
+      setAnswer(prev => prev + num);
+    }
+  };
+
   return (
     <div className="min-h-screen p-4 flex flex-col items-center justify-center bg-[#1A1F2C]">
       <motion.div
@@ -74,15 +82,40 @@ const MultiplicationGame = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
-              type="number"
-              inputMode="numeric"
-              pattern="[0-9]*"
+              type="text"
+              inputMode="none"
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              readOnly
               className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
               placeholder="התשובה שלך"
-              autoFocus
             />
+            
+            <div className="grid grid-cols-3 gap-2">
+              {[...'789456123'].split('').map((num) => (
+                <Button
+                  key={num}
+                  type="button"
+                  onClick={() => handleNumberClick(num)}
+                  className="p-4 text-xl bg-[#2A2F3C] hover:bg-[#3A3F4C]"
+                >
+                  {num}
+                </Button>
+              ))}
+              <Button
+                type="button"
+                onClick={() => handleNumberClick('0')}
+                className="p-4 text-xl bg-[#2A2F3C] hover:bg-[#3A3F4C]"
+              >
+                0
+              </Button>
+              <Button
+                type="button"
+                onClick={() => handleNumberClick('⌫')}
+                className="p-4 text-xl bg-[#2A2F3C] hover:bg-[#3A3F4C]"
+              >
+                ⌫
+              </Button>
+            </div>
             
             <Button 
               type="submit"
