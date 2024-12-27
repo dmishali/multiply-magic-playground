@@ -1,28 +1,31 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import WelcomeScreen from "./WelcomeScreen";
 import GameModeSelection from "./GameModeSelection";
 import MultiplicationTableSelection from "./MultiplicationTableSelection";
-import type { GameMode } from "./GameModeSelection";
-import type { TableRange } from "./MultiplicationTableSelection";
+import GameQuestion from "./game/GameQuestion";
+import HighScoresTable from "./game/HighScoresTable";
+import { getHighScores, saveHighScore } from "@/utils/highScores";
+import type { GameMode, TableRange, GameState, HighScore } from "@/types/game";
 
 const MultiplicationGame = () => {
   const [num1, setNum1] = useState(0);
   const [num2, setNum2] = useState(0);
-  const [score, setScore] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
   const [answer, setAnswer] = useState("");
-  const [streak, setStreak] = useState(0);
   const [playerName, setPlayerName] = useState<string | null>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [tableRange, setTableRange] = useState<TableRange | null>(null);
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameFinished, setGameFinished] = useState(false);
+  const [highScores, setHighScores] = useState<HighScore[]>([]);
+  const [gameState, setGameState] = useState<GameState>({
+    score: 0,
+    totalQuestions: 0,
+    streak: 0,
+    elapsedTime: 0,
+    gameStarted: false,
+    gameFinished: false
+  });
   
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,61 +37,66 @@ const MultiplicationGame = () => {
   };
 
   const resetGame = () => {
-    setScore(0);
-    setTotalQuestions(0);
-    setStreak(0);
+    setGameState({
+      score: 0,
+      totalQuestions: 0,
+      streak: 0,
+      elapsedTime: 0,
+      gameStarted: false,
+      gameFinished: false
+    });
     setAnswer("");
     setGameMode(null);
     setTableRange(null);
     setStartTime(null);
-    setElapsedTime(0);
-    setGameStarted(false);
-    setGameFinished(false);
+    setHighScores([]);
     generateQuestion();
   };
 
   useEffect(() => {
     if (playerName && gameMode && tableRange) {
       generateQuestion();
-      // Focus the input when the game starts
-      inputRef.current?.focus();
+      if (gameMode.timed) {
+        setHighScores(getHighScores(gameMode.questions));
+      }
     }
   }, [playerName, gameMode, tableRange]);
 
   useEffect(() => {
-    // Re-focus the input after each question
-    if (!gameFinished) {
-      inputRef.current?.focus();
-    }
-  }, [num1, num2]);
-
-  useEffect(() => {
     let timer: number;
-    if (gameStarted && gameMode?.timed && startTime !== null && !gameFinished) {
+    if (gameState.gameStarted && gameMode?.timed && startTime !== null && !gameState.gameFinished) {
       timer = window.setInterval(() => {
-        setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+        setGameState(prev => ({
+          ...prev,
+          elapsedTime: Math.floor((Date.now() - startTime) / 1000)
+        }));
       }, 1000);
     }
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [gameStarted, gameMode, startTime, gameFinished]);
+  }, [gameState.gameStarted, gameMode, startTime, gameState.gameFinished]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!gameStarted) {
-      setGameStarted(true);
+    if (!gameState.gameStarted) {
+      setGameState(prev => ({ ...prev, gameStarted: true }));
       setStartTime(Date.now());
     }
 
     const correctAnswer = num1 * num2;
-    setTotalQuestions(prev => prev + 1);
+    const isCorrect = parseInt(answer) === correctAnswer;
     
-    if (parseInt(answer) === correctAnswer) {
-      setScore(score + 1);
-      setStreak(streak + 1);
+    setGameState(prev => ({
+      ...prev,
+      totalQuestions: prev.totalQuestions + 1,
+      score: isCorrect ? prev.score + 1 : prev.score,
+      streak: isCorrect ? prev.streak + 1 : 0
+    }));
+    
+    if (isCorrect) {
       toast.success("נכון! 🎉", {
-        description: streak >= 2 ? `${streak + 1} ברצף! מדהים!` : "המשך כך!",
+        description: gameState.streak >= 2 ? `${gameState.streak + 1} ברצף! מדהים!` : "המשך כך!",
         position: "top-center",
         style: {
           fontSize: "1.2rem",
@@ -99,7 +107,6 @@ const MultiplicationGame = () => {
         },
       });
     } else {
-      setStreak(0);
       toast.error("טעות!", {
         description: `התשובה הנכונה היא ${correctAnswer}`,
         position: "top-center",
@@ -113,11 +120,24 @@ const MultiplicationGame = () => {
       });
     }
 
-    if (gameMode && totalQuestions + 1 >= gameMode.questions) {
+    if (gameMode && gameState.totalQuestions + 1 >= gameMode.questions) {
       const finalTime = Math.floor((Date.now() - (startTime || 0)) / 1000);
-      setGameFinished(true);
+      setGameState(prev => ({ ...prev, gameFinished: true }));
+      
+      if (gameMode.timed) {
+        const newScore: HighScore = {
+          playerName: playerName || "אנונימי",
+          score: gameState.score + (isCorrect ? 1 : 0),
+          time: finalTime,
+          date: new Date().toISOString()
+        };
+        
+        const updatedScores = saveHighScore(gameMode.questions, newScore);
+        setHighScores(updatedScores);
+      }
+
       toast.success("כל הכבוד! סיימת את המשחק!", {
-        description: `ענית נכון על ${score + (parseInt(answer) === correctAnswer ? 1 : 0)} שאלות מתוך ${gameMode.questions} שאלות בזמן של ${finalTime} שניות`,
+        description: `ענית נכון על ${gameState.score + (isCorrect ? 1 : 0)} שאלות מתוך ${gameMode.questions} שאלות בזמן של ${finalTime} שניות`,
         position: "top-center",
         duration: 5000,
         style: {
@@ -131,7 +151,6 @@ const MultiplicationGame = () => {
     } else {
       generateQuestion();
     }
-    setAnswer("");
   };
 
   if (!playerName) {
@@ -157,62 +176,41 @@ const MultiplicationGame = () => {
         משחק חדש
       </Button>
       
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="w-full max-w-sm"
-      >
-        <Card className="p-6 bg-card shadow-lg">
-          <div className="text-2xl font-bold mb-2 text-right">
+      {!gameState.gameFinished ? (
+        <>
+          <div className="text-2xl font-bold mb-2 text-right text-white">
             שלום {playerName}!
           </div>
-          <div className="text-2xl font-bold mb-2 text-right">
-            ניקוד: {score}/{totalQuestions} {streak > 1 && `🔥 ${streak}`}
+          <div className="text-2xl font-bold mb-2 text-right text-white">
+            ניקוד: {gameState.score}/{gameState.totalQuestions} {gameState.streak > 1 && `🔥 ${gameState.streak}`}
           </div>
-          {gameMode?.timed && gameStarted && !gameFinished && (
-            <div className="text-xl font-bold mb-4 text-right">
-              זמן: {elapsedTime} שניות
+          {gameMode?.timed && gameState.gameStarted && (
+            <div className="text-xl font-bold mb-4 text-right text-white">
+              זמן: {gameState.elapsedTime} שניות
             </div>
           )}
           
-          {gameFinished ? (
-            <div className="text-3xl font-bold text-center space-y-4">
-              <div>
-                ענית נכון על {score} שאלות מתוך {gameMode?.questions} שאלות
-                {gameMode?.timed && ` בזמן של ${elapsedTime} שניות`}
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="text-4xl font-bold mb-8 text-center">
-                {num1} × {num2} = ?
-              </div>
+          <GameQuestion
+            num1={num1}
+            num2={num2}
+            answer={answer}
+            onAnswerChange={setAnswer}
+            onSubmit={handleSubmit}
+            inputRef={inputRef}
+          />
+        </>
+      ) : (
+        <div className="text-3xl font-bold text-center text-white space-y-4">
+          <div>
+            ענית נכון על {gameState.score} שאלות מתוך {gameMode?.questions} שאלות
+            {gameMode?.timed && ` בזמן של ${gameState.elapsedTime} שניות`}
+          </div>
+        </div>
+      )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  ref={inputRef}
-                  type="number"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
-                  placeholder="התשובה שלך"
-                  autoFocus
-                />
-                
-                <Button 
-                  type="submit"
-                  className="w-full text-xl py-6 bg-[#1A1F2C] hover:bg-[#2A2F3C]"
-                  disabled={!answer}
-                >
-                  בדוק תשובה
-                </Button>
-              </form>
-            </>
-          )}
-        </Card>
-      </motion.div>
+      {gameMode.timed && highScores.length > 0 && (
+        <HighScoresTable scores={highScores} questionsCount={gameMode.questions} />
+      )}
     </div>
   );
 };
