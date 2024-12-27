@@ -17,26 +17,26 @@ const HighScoresTable = ({ scores, questionsCount }: HighScoresTableProps) => {
       animate={{ scale: 1, opacity: 1 }}
       className="w-full max-w-sm mt-6"
     >
-      <Card className="p-4 bg-card shadow-lg">
-        <div className="text-xl font-bold mb-4 text-right">
-          {questionsCount} שאלות - טבלת שיאים
+      <Card className="p-4 bg-[#1A1F2C] text-white shadow-lg">
+        <div className="text-2xl font-bold mb-4 text-center">
+          טבלת שיאים עבור {questionsCount} שאלות
         </div>
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="text-right">מקום</TableHead>
-              <TableHead className="text-right">שם</TableHead>
-              <TableHead className="text-right">ניקוד</TableHead>
-              <TableHead className="text-right">זמן</TableHead>
+            <TableRow className="border-b border-gray-700">
+              <TableHead className="text-center text-lg font-bold text-white">מקום</TableHead>
+              <TableHead className="text-center text-lg font-bold text-white">שם</TableHead>
+              <TableHead className="text-center text-lg font-bold text-white">ניקוד</TableHead>
+              <TableHead className="text-center text-lg font-bold text-white">זמן</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {scores.map((score, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>{score.playerName}</TableCell>
-                <TableCell>{score.score}</TableCell>
-                <TableCell>{score.time} שניות</TableCell>
+              <TableRow key={index} className="border-b border-gray-700">
+                <TableCell className="text-center text-lg font-medium">{index + 1}</TableCell>
+                <TableCell className="text-center text-lg">{score.playerName}</TableCell>
+                <TableCell className="text-center text-lg">{score.score}</TableCell>
+                <TableCell className="text-center text-lg">{score.time} שניות</TableCell>
               </TableRow>
             ))}
           </TableBody>
