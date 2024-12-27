@@ -5,8 +5,10 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Supabase environment variables are not set. Make sure you are connected to Supabase in your Lovable project.');
-  throw new Error('Missing Supabase environment variables');
+  console.warn('Supabase environment variables are missing. High scores functionality will be disabled.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder-url.supabase.co',
+  supabaseKey || 'placeholder-key'
+);
