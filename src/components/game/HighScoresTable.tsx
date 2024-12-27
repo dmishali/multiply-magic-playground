@@ -36,7 +36,7 @@ const HighScoresTable = ({ scores, questionsCount }: HighScoresTableProps) => {
                   {`${index + 1}. ${score.playerName}`}
                 </TableCell>
                 <TableCell className="text-center text-lg">{score.score}</TableCell>
-                <TableCell className="text-center text-lg">{score.time} שניות</TableCell>
+                <TableCell className="text-center text-lg">שניות {score.time}</TableCell>
               </TableRow>
             ))}
           </TableBody>
