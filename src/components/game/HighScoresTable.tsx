@@ -27,6 +27,7 @@ const HighScoresTable = ({ scores, questionsCount }: HighScoresTableProps) => {
               <TableHead className="text-center text-lg font-bold text-white">זמן</TableHead>
               <TableHead className="text-center text-lg font-bold text-white">ניקוד</TableHead>
               <TableHead className="text-center text-lg font-bold text-white">שם</TableHead>
+              <TableHead className="text-center text-lg font-bold text-white">#</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -34,9 +35,8 @@ const HighScoresTable = ({ scores, questionsCount }: HighScoresTableProps) => {
               <TableRow key={index} className="border-b border-gray-700">
                 <TableCell className="text-center text-lg">שניות {score.time}</TableCell>
                 <TableCell className="text-center text-lg">{score.score}</TableCell>
-                <TableCell className="text-center text-lg">
-                  {`${index + 1}. ${score.playerName}`}
-                </TableCell>
+                <TableCell className="text-center text-lg">{score.playerName}</TableCell>
+                <TableCell className="text-center text-lg">{index + 1}</TableCell>
               </TableRow>
             ))}
           </TableBody>
