@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 interface GameQuestionProps {
   num1: number;
@@ -12,6 +13,11 @@ interface GameQuestionProps {
 }
 
 const GameQuestion = ({ num1, num2, answer, onAnswerChange, onSubmit, inputRef }: GameQuestionProps) => {
+  useEffect(() => {
+    // Focus on input when component mounts and when numbers change
+    inputRef.current?.focus();
+  }, [num1, num2, inputRef]);
+
   return (
     <motion.div
       initial={{ scale: 0.9, opacity: 0 }}
@@ -33,7 +39,6 @@ const GameQuestion = ({ num1, num2, answer, onAnswerChange, onSubmit, inputRef }
             onChange={(e) => onAnswerChange(e.target.value)}
             className="w-full p-4 text-3xl text-center rounded-lg border-2 border-primary/20 focus:border-primary focus:ring-2 focus:ring-primary/50 outline-none"
             placeholder="התשובה שלך"
-            autoFocus
           />
           
           <Button 
