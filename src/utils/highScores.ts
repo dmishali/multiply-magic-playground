@@ -1,27 +1,40 @@
-import type { HighScore } from "@/types/game";
+import { supabase } from '@/lib/supabase';
+import type { HighScore } from '@/types/game';
 
-const HIGH_SCORES_KEY = "multiplicationGameHighScores";
+export const getHighScores = async (questionsCount: number): Promise<HighScore[]> => {
+  const { data, error } = await supabase
+    .from('high_scores')
+    .select('*')
+    .eq('questions_count', questionsCount)
+    .order('score', { ascending: false })
+    .order('time', { ascending: true })
+    .limit(5);
 
-export const getHighScores = (questionsCount: number): HighScore[] => {
-  const allScores = JSON.parse(localStorage.getItem(HIGH_SCORES_KEY) || "{}");
-  return (allScores[questionsCount] || []).slice(0, 5);
+  if (error) {
+    console.error('Error fetching high scores:', error);
+    return [];
+  }
+
+  return data || [];
 };
 
-export const saveHighScore = (questionsCount: number, newScore: HighScore) => {
-  const allScores = JSON.parse(localStorage.getItem(HIGH_SCORES_KEY) || "{}");
-  const currentScores = allScores[questionsCount] || [];
-  
-  const updatedScores = [...currentScores, newScore]
-    .sort((a, b) => {
-      // First sort by score
-      if (b.score !== a.score) return b.score - a.score;
-      // If scores are equal, sort by time (faster time is better)
-      return a.time - b.time;
-    })
-    .slice(0, 5);
+export const saveHighScore = async (questionsCount: number, newScore: HighScore) => {
+  const { data, error } = await supabase
+    .from('high_scores')
+    .insert([{
+      player_name: newScore.playerName,
+      score: newScore.score,
+      time: newScore.time,
+      questions_count: questionsCount,
+      date: new Date().toISOString()
+    }])
+    .select();
 
-  allScores[questionsCount] = updatedScores;
-  localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(allScores));
-  
-  return updatedScores;
+  if (error) {
+    console.error('Error saving high score:', error);
+    return [];
+  }
+
+  // Fetch updated high scores after inserting
+  return getHighScores(questionsCount);
 };
