@@ -24,19 +24,19 @@ const HighScoresTable = ({ scores, questionsCount }: HighScoresTableProps) => {
         <Table>
           <TableHeader>
             <TableRow className="border-b border-gray-700">
-              <TableHead className="text-center text-lg font-bold text-white">שם</TableHead>
-              <TableHead className="text-center text-lg font-bold text-white">ניקוד</TableHead>
               <TableHead className="text-center text-lg font-bold text-white">זמן</TableHead>
+              <TableHead className="text-center text-lg font-bold text-white">ניקוד</TableHead>
+              <TableHead className="text-center text-lg font-bold text-white">שם</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {scores.map((score, index) => (
               <TableRow key={index} className="border-b border-gray-700">
+                <TableCell className="text-center text-lg">שניות {score.time}</TableCell>
+                <TableCell className="text-center text-lg">{score.score}</TableCell>
                 <TableCell className="text-center text-lg">
                   {`${index + 1}. ${score.playerName}`}
                 </TableCell>
-                <TableCell className="text-center text-lg">{score.score}</TableCell>
-                <TableCell className="text-center text-lg">שניות {score.time}</TableCell>
               </TableRow>
             ))}
           </TableBody>
