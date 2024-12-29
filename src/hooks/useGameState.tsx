@@ -48,9 +48,8 @@ export const useGameState = () => {
   useEffect(() => {
     if (playerName && gameMode && tableRange) {
       generateQuestion();
-      if (gameMode.timed) {
-        getHighScores(gameMode.questions).then(setHighScores);
-      }
+      // Fetch high scores for both timed and untimed modes
+      getHighScores(gameMode.questions).then(setHighScores);
     }
   }, [playerName, gameMode, tableRange]);
 
@@ -116,17 +115,16 @@ export const useGameState = () => {
       const finalTime = Math.floor((Date.now() - (startTime || 0)) / 1000);
       setGameState(prev => ({ ...prev, gameFinished: true }));
       
-      if (gameMode.timed) {
-        const newScore: HighScore = {
-          playerName: playerName || "אנונימי",
-          score: gameState.score + (isCorrect ? 1 : 0),
-          time: finalTime,
-          date: new Date().toISOString()
-        };
-        
-        const updatedScores = await saveHighScore(gameMode.questions, newScore);
-        setHighScores(updatedScores);
-      }
+      // Save score for both timed and untimed modes
+      const newScore: HighScore = {
+        playerName: playerName || "אנונימי",
+        score: gameState.score + (isCorrect ? 1 : 0),
+        time: finalTime,
+        date: new Date().toISOString()
+      };
+      
+      const updatedScores = await saveHighScore(gameMode.questions, newScore);
+      setHighScores(updatedScores);
 
       toast.success("כל הכבוד! סיימת את המשחק!", {
         description: `ענית נכון על ${gameState.score + (isCorrect ? 1 : 0)} שאלות מתוך ${gameMode.questions} שאלות בזמן של ${finalTime} שניות`,
