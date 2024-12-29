@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import type { HighScore } from '@/types/game';
 
 export const getHighScores = async (questionsCount: number): Promise<HighScore[]> => {
@@ -16,7 +16,12 @@ export const getHighScores = async (questionsCount: number): Promise<HighScore[]
       return [];
     }
 
-    return data || [];
+    return data.map(score => ({
+      playerName: score.player_name,
+      score: score.score,
+      time: score.time,
+      date: score.date
+    }));
   } catch (error) {
     console.warn('Failed to fetch high scores:', error);
     return [];
