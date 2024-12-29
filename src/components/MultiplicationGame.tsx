@@ -74,16 +74,16 @@ const MultiplicationGame = () => {
           />
         </>
       ) : (
-        <div className="text-3xl font-bold text-center text-white space-y-4">
-          <div>
+        <div className="w-full max-w-md space-y-6">
+          <div className="text-3xl font-bold text-center text-white">
             ענית נכון על {gameState.score} שאלות מתוך {gameMode?.questions} שאלות
             {gameMode?.timed && ` בזמן של ${gameState.elapsedTime} שניות`}
           </div>
-        </div>
-      )}
 
-      {gameMode?.timed && highScores.length > 0 && (
-        <HighScoresTable scores={highScores} questionsCount={gameMode.questions} />
+          {highScores.length > 0 && (
+            <HighScoresTable scores={highScores} questionsCount={gameMode.questions} />
+          )}
+        </div>
       )}
     </div>
   );
